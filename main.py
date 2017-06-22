@@ -36,8 +36,12 @@ for path in image_paths:
         высота_картинки = round(ширина_картинки * height / width)
         img = img.resize((ширина_картинки, высота_картинки), Image.ANTIALIAS)
         width, height = ширина_картинки, высота_картинки
-
-    exif = piexif.load(img.info['exif'])
+    try:
+        exif = piexif.load(img.info['exif'])
+    except KeyError:
+        print(f'Нет даты: {path}\nНажми Enter чтобы продолжить')
+        input()
+        continue
     дата_съемки = exif['0th'][piexif.ImageIFD.DateTime].decode('utf-8')
 
     дата, время = дата_съемки.split(' ', 1)
