@@ -1,5 +1,5 @@
 #!python3
-# coding:utf-8
+# -*- coding: utf-8 -*-
 
 # pip install Pillow piexif
 
@@ -22,7 +22,7 @@ import os
 if len(sys.argv) < 2:
     print('Не нашёл изображений. Надо передать список файлов в качестве аргументов.\n'
           'Если ты из под венды, просто брось мышкой нужные файлы на это приложение.\n\n'
-          'Нажми Enter, чтобы выйти и попробывать еще раз.')
+          'Топи Enter, чтобы выйти и попробывать еще раз.')
     input()
     exit()
 
@@ -38,16 +38,12 @@ for path in image_paths:
         width, height = ширина_картинки, высота_картинки
     try:
         exif = piexif.load(img.info['exif'])
+        дата_съемки = exif['0th'][piexif.ImageIFD.DateTime].decode('utf-8')
+        дата, время = дата_съемки.split(' ', 1)
+        год, месяц, число = дата.split(':', 3)
+        дата_съемки = f"{число}/{месяц}/{год[2:]} {время}"
     except KeyError:
-        print(f'Нет даты: {path}\nНажми Enter чтобы продолжить')
-        input()
-        continue
-    дата_съемки = exif['0th'][piexif.ImageIFD.DateTime].decode('utf-8')
-
-    дата, время = дата_съемки.split(' ', 1)
-    год, месяц, число = дата.split(':', 3)
-
-    дата_съемки = f"{число}/{месяц}/{год[2:]} {время}"
+        дата_съемки = input(f'У {path} нет даты. Введи ее в таком формате: 31/12/99 23:59:59')
 
     draw = ImageDraw.Draw(img, 'RGBA')
 
