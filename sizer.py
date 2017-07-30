@@ -9,47 +9,45 @@ from PIL import Image
 
 ширина_картинки = 400
 сжатие_картинки = 50
-
 префикс_имён_файлов = 'S_'
 
 
-class Application(ttk.Frame):
+class Приложение(ttk.Frame):
     def __init__(self, image_paths, master=None):
         super().__init__(master)
-        self.image_paths = image_paths
-        self.pack(fill='both', expand=True)
-
+        self.пути_к_картинкам = image_paths
         self.master.title("Уменьшалка Картинок")
 
-        self.frame = ttk.Frame(self)
+        # Делаем кнопки
+        self.кнопка_уменьшить = ttk.Button(self, text=f"Ширину на {ширина_картинки}px", command=self.уменьшить)
+        self.кнопка_сжать = ttk.Button(self, text=f"Сжатие на {сжатие_картинки}%", command=self.сжать)
 
-        self.scale_btn = ttk.Button(self.frame, text=f"Ширину на {ширина_картинки}px", command=self.scale)
-        self.compress_btn = ttk.Button(self.frame, text=f"Сжатие на {сжатие_картинки}%", command=self.compress)
+        # Раскладываем кнопки
+        self.кнопка_уменьшить.pack(fill='x')
+        self.кнопка_сжать.pack(fill='x')
+        self.pack(fill='both', expand=True)
 
-        self.scale_btn.pack(fill='x')
-        self.compress_btn.pack(fill='x')
+    def уменьшить(self):
+        for путь_к_файлу in self.пути_к_картинкам:
+            картинка = Image.open(путь_к_файлу).convert('RGB')
+            ширина, высота = картинка.size
 
-        self.frame.pack(fill='x')
+            if ширина > 400:
+                высота_картинки = round(ширина_картинки * высота / ширина)
+                картинка = картинка.resize((ширина_картинки, высота_картинки), Image.ANTIALIAS)
 
-    def scale(self):
-        for path in self.image_paths:
-            img = Image.open(path).convert('RGB')
-            width, height = img.size
-
-            if width > 400:
-                высота_картинки = round(ширина_картинки * height / width)
-                img = img.resize((ширина_картинки, высота_картинки), Image.ANTIALIAS)
-
-            folder, filename = os.path.split(path)
-            img.save(os.path.join(folder, префикс_имён_файлов + filename))
+            папка, имя_файла = os.path.split(путь_к_файлу)
+            картинка.save(os.path.join(папка, префикс_имён_файлов + имя_файла))
         self.quit()
 
-    def compress(self):
-        for path in self.image_paths:
-            img = Image.open(path).convert('RGB')
-            folder, filename = os.path.split(path)
-            img.save(os.path.join(folder, префикс_имён_файлов + filename), format='JPEG', quality=сжатие_картинки)
+    def сжать(self):
+        for путь_к_файлу in self.пути_к_картинкам:
+            img = Image.open(путь_к_файлу).convert('RGB')
+            папка, имя_файла = os.path.split(путь_к_файлу)
+            img.save(os.path.join(папка, префикс_имён_файлов + имя_файла), format='JPEG', quality=сжатие_картинки)
         self.quit()
+
+# Здесь начинается выполнение программы.
 
 if len(sys.argv) < 2:
     print('Не нашёл изображений. Надо передать список файлов в качестве аргументов.\n'
@@ -58,9 +56,8 @@ if len(sys.argv) < 2:
     input()
     exit()
 
+пути_к_файлам = sys.argv[1:]  # Читаем что было брошено на скрипт
 
-paths = sys.argv[1:]
-
-root = tkinter.Tk()
-app = Application(paths, master=root)
-app.mainloop()
+root = tkinter.Tk()  # Создаем управлялку оконной подсистемой
+app = Приложение(пути_к_файлам, master=root)  # Создаем приложение, описанное выше
+app.mainloop()  # Запускаем приложение
