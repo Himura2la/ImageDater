@@ -51,8 +51,7 @@ class Приложение(ttk.Frame):
     def проставить_всем(self):
         for картинка, поле_даты in self.даты.items():
             дата = поле_даты.get()
-            ориентация = self.exif[картинка]["ориентация"] if self.exif[картинка] and "ориентация" in self.exif[картинка] else 1
-            проставить_дату(картинка, дата, ориентация)
+            проставить_дату(картинка, дата, self.exif[картинка]["ориентация"])
         self.master.destroy()
         return
 
@@ -64,7 +63,7 @@ def прочитать_EXIF(путь_к_файлу):
         дата_съемки = exif['0th'][piexif.ImageIFD.DateTime].decode('utf-8')
         дата, время = дата_съемки.split(' ', 1)
         год, месяц, число = дата.split(':', 3)
-        ориентация = exif["0th"][piexif.ImageIFD.Orientation]
+        ориентация = exif["0th"][piexif.ImageIFD.Orientation] if piexif.ImageIFD.Orientation in exif["0th"] else 1
         return {
             "дата": f"{число}.{месяц}.{год[2:]} {время}",
             "ориентация": ориентация
