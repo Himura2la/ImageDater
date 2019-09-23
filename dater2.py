@@ -60,7 +60,7 @@ def прочитать_EXIF(путь_к_файлу):
     картинка = Image.open(путь_к_файлу).convert('RGB')
     try:
         exif = piexif.load(картинка.info['exif'])
-        дата_съемки = exif['0th'][piexif.ImageIFD.DateTime].decode('utf-8')
+        дата_съемки = exif['Exif'][piexif.ExifIFD.DateTimeOriginal].decode('utf-8')
         дата, время = дата_съемки.split(' ', 1)
         год, месяц, число = дата.split(':', 3)
         ориентация = exif["0th"][piexif.ImageIFD.Orientation] if piexif.ImageIFD.Orientation in exif["0th"] else 1
