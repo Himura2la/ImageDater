@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import os
 import sys
+import shutil
 import tkinter
 from tkinter import ttk, messagebox
 
@@ -9,6 +10,8 @@ from PIL import Image, ImageDraw, ImageFont # pip install Pillow
 import piexif # pip install piexif
 
 префикс_имён_файлов = 'D_'
+имя_папки_с_датой = 'Дата'
+имя_папки_без_даты = 'Оригиналы'
 размер_шрифта = 100
 отступ_слева = 20
 отступ_снизу = 20
@@ -50,6 +53,7 @@ class Приложение(ttk.Frame):
         self.кнопка_проставить = ttk.Button(self, text="Проставить всем даты", command=self.проставить_всем)
         self.кнопка_проставить.pack(fill='both', expand=True)
         self.pack(fill='both', expand=True)
+        
 
     def проставить_всем(self):
         for картинка, поле_даты in self.даты.items():
@@ -117,7 +121,13 @@ def проставить_дату(путь_к_файлу, дата_съемки,
               шрифт)
 
     folder, filename = os.path.split(путь_к_файлу)
-    картинка.save(os.path.join(folder, префикс_имён_файлов + filename))
+    
+    путь_к_папке_с_датой = os.path.join(folder, имя_папки_с_датой)
+    путь_к_папке_без_даты = os.path.join(folder, имя_папки_без_даты)
+    if not os.path.isdir(путь_к_папке_с_датой): os.mkdir(путь_к_папке_с_датой)
+    if not os.path.isdir(путь_к_папке_без_даты): os.mkdir(путь_к_папке_без_даты)
+    картинка.save(os.path.join(путь_к_папке_с_датой, префикс_имён_файлов + filename))
+    shutil.move(путь_к_файлу, os.path.join(путь_к_папке_без_даты, filename))
 
 
 # Здесь начинается выполнение программы.
