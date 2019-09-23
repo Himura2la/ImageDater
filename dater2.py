@@ -44,6 +44,9 @@ class Приложение(ttk.Frame):
 
             self.строка.pack(side='top', fill="x")
         
+        if len(пути_к_картинкам) > 3:
+            self.проставить_всем()
+
         self.кнопка_проставить = ttk.Button(self, text="Проставить всем даты", command=self.проставить_всем)
         self.кнопка_проставить.pack(fill='both', expand=True)
         self.pack(fill='both', expand=True)
