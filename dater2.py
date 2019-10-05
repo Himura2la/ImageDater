@@ -37,7 +37,7 @@ class Приложение(ttk.Frame):
         for картинка in пути_к_картинкам:
             self.строка = ttk.Frame(self)
             self.exif[картинка] = прочитать_EXIF(картинка)
-            дата = self.exif[картинка]["дата"] if self.exif[картинка] else "пусто"
+            дата = self.exif[картинка]["дата"]
             self.даты[картинка] = tkinter.StringVar(self.строка, value=дата)
 
             self.надпись_файл = tkinter.Label(self.строка, text=картинка)
@@ -76,7 +76,10 @@ def прочитать_EXIF(путь_к_файлу):
             "ориентация": ориентация
         }
     except KeyError:
-        return None
+        return {
+            "дата": "пусто",
+            "ориентация": 1
+        }
 
 
 def проставить_дату(путь_к_файлу, дата_съемки, ориентация):
