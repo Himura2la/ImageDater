@@ -1,1 +1,1 @@
-py -3 dater.py %*
+py -3 %~dp0dater2.py %*
