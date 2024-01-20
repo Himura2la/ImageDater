@@ -1,1 +1,1 @@
-py -3 %~dp0dater2.py %*
+%~dp0.venv\Scripts\python.exe %~dp0dater2.py %*
